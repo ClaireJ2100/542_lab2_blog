@@ -16,15 +16,71 @@
   {
     "objectID": "posts/post-with-code/index.html",
     "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
     "section": "",
-    "text": "This is a post with executable code."
+    "text": "Regression is a supervised machine learning technique used to model relationships between variables and make predictions. Among the many regression techniques, ridge regression and logistic regression stand out for their strengths and applications. In this blog, we will dive into these methods, explain their concepts, and guide you through practical implementations via Python."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#introduction",
+    "href": "posts/post-with-code/index.html#introduction",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "",
+    "text": "Regression is a supervised machine learning technique used to model relationships between variables and make predictions. Among the many regression techniques, ridge regression and logistic regression stand out for their strengths and applications. In this blog, we will dive into these methods, explain their concepts, and guide you through practical implementations via Python."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#what-is-regression",
+    "href": "posts/post-with-code/index.html#what-is-regression",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "What is Regression?",
+    "text": "What is Regression?\nRegression is a statistical method for understanding the relationships between features and outcome. Unlike simple linear regression or multiple linear regression, advanced methods like ridge regression and logistic regression can address specific challenges like multicollinearity and classification."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#ridge-regression",
+    "href": "posts/post-with-code/index.html#ridge-regression",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Ridge Regression",
+    "text": "Ridge Regression\nRidge Regression is a linear regression model with a regularization alpha to reduce overfitting. This method adds the squared magnitude of the coefficients as a penalty, it prevents excessively large coefficients that can improve predictive performance. Ridge Regression minimizes this expression: $RSS_{Ridge} = ( - {})^T ( - {}) + ^T {} = | - |^2 + |{}|^2 $ where \\(\\lambda\\) is the penalty term. If we increase the hyperparameter alpha of Ridge, it is likely to decrease model complexity. If we set the alpha to zero, it is the same as LinearRegression. Code example:\n\nfrom sklearn.linear_model import Ridge\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import mean_squared_error\n\n# Load dataset\nfrom sklearn.datasets import load_diabetes\nX, y = load_diabetes(return_X_y=True)\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Train Ridge regression model\nridge = Ridge(alpha=1.0)\nridge.fit(X_train, y_train)\n\n# Predictions and evaluation\ny_pred = ridge.predict(X_test)\nprint(\"Mean Squared Error:\", mean_squared_error(y_test, y_pred))\n\nMean Squared Error: 3077.41593882723"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#logistic-regression",
+    "href": "posts/post-with-code/index.html#logistic-regression",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Logistic Regression",
+    "text": "Logistic Regression\nLogistic regression is a classification algorithm that predicts probabilities of categorical outcomes. The logit function maps predictions to probabilities, making it ideal for binary classification tasks. The logit function can be expressed as: \\(\\mbox{logit}(p_i)= \\log\\left(\\frac{p_i}{1 - p_i}\\right) = \\beta_0 + \\beta_1 X_{i}.\\) In this expression, logit(pi) is the dependent variable and X is the independent variable. Logit odds can be difficult to interpret, thus, we have to transform back our estimated coefficient to the original scale. It is common to exponentiate the coefficient into an odds ratio. The general interpretation is: for each unit increase in \\(X_i\\), \\(Y_i\\) is \\(e^{\\hat{\\beta}_1}\\) times more likely to be 1 than to be 0.\nCode example:\n\nfrom sklearn.linear_model import LogisticRegression\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score\n\n# Load dataset\nfrom sklearn.datasets import load_iris\nX, y = load_iris(return_X_y=True)\nX, y = X[y != 2], y[y != 2]  # Binary classification\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\n\n# Train Logistic Regression model\nlogreg = LogisticRegression()\nlogreg.fit(X_train, y_train)\n\n# Predictions and evaluation\ny_pred = logreg.predict(X_test)\nprint(\"Accuracy:\", accuracy_score(y_test, y_pred))\n\nAccuracy: 1.0"
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#comparing-ridge-and-logistic-regression",
+    "href": "posts/post-with-code/index.html#comparing-ridge-and-logistic-regression",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Comparing Ridge and Logistic Regression",
+    "text": "Comparing Ridge and Logistic Regression\nWhile Ridge Regression is used for continuous outcomes, Logistic Regression addresses binary and multi-class classification tasks. Here are some insights into their comparison: - Mathematical foundation: Ridge regression minimizes the residual sum of squares with an L2 penalty, while logistic regression optimizes the log-likelihood function with regularization. - Scaling: both ridge regression and logistic regression typically benefit from scaling the input data, especially when using numerical features of varying ranges. - Output interpretability: Ridge regression provides straightforward coefficient estimates for continuous predictions, whereas logistic regression outputs probabilities for different classes."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#real-world-applications-of-regression",
+    "href": "posts/post-with-code/index.html#real-world-applications-of-regression",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Real-world Applications of Regression",
+    "text": "Real-world Applications of Regression\nRidge regression helps us find out the relationships in data, and answer questions like: what’s the relationship between the amount of time you study and the exam scores. Many real-world cases could be solved by ridge regression: - Real Estate: Estimating house prices by considering factors like location, size, and amenities. - Finance: Forecasting stock prices and portfolio returns. - Marketing: Predicting sales performance based on advertisement spend.\nIn real life, logistic regression is frequently used to forecast binary or multi-class outcomes, such as success/failure, win/lose. Some of the real-world cases are: - Healthcare: Predicting the likelihood of heart disease. - Finance: Detecting fraudulent transactions based on transaction patterns. - Churn prediction: Predicting customer churn for subscription-based services."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#tips-for-effective-regression-modeling",
+    "href": "posts/post-with-code/index.html#tips-for-effective-regression-modeling",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Tips for Effective Regression Modeling",
+    "text": "Tips for Effective Regression Modeling\n\nImprove the data quality by removing outliers, and handling missing values.\nChoosing the optimal hyperparameters.\nDetecting multicollinearity in data by using metrics like Variance Inflation Factor (VIF).\nFeature Selection: Use techniques like PCA dimensionality reduction.\nInterpret Coefficients: Understand the impact of each feature on predictions."
+  },
+  {
+    "objectID": "posts/post-with-code/index.html#conclusion",
+    "href": "posts/post-with-code/index.html#conclusion",
+    "title": "Mastering Regression: A Dive into Ridge and Logistic Regression",
+    "section": "Conclusion",
+    "text": "Conclusion\nRegression techniques like ridge and logistic regression are essential tools for data scientists. By mastering these models, you can tackle a wide range of prediction and classification problems in real life. Ridge regression helps in predicting continuous variables while handling overfitting through regularization. On the other hand, logistic regression helps to make decisions in binary and multi-class tasks."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Blog",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\nJan 17, 2025\n\n\nHarlow Malloc\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 14, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Mastering Regression: A Dive into Ridge and Logistic Regression\n\n\n\n\n\n\nMachine Learning\n\n\nData Science\n\n\nRegression\n\n\nPython\n\n\n\n\n\n\n\n\n\nJan 18, 2025\n\n\nZhengling Jiang\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\nJan 14, 2025\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
   }
 ]

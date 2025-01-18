@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Harlow Malloc">
-<meta name="dcterms.date" content="2025-01-17">
+<meta name="author" content="Zhengling Jiang">
+<meta name="dcterms.date" content="2025-01-18">
 
-<title>Post With Code – Blog</title>
+<title>Mastering Regression: A Dive into Ridge and Logistic Regression – Blog</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,6 +21,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -69,6 +103,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -115,11 +178,12 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Post With Code</h1>
+      <h1 class="title">Mastering Regression: A Dive into Ridge and Logistic Regression</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
-                <div class="quarto-category">code</div>
-                <div class="quarto-category">analysis</div>
+                <div class="quarto-category">Machine Learning</div>
+                <div class="quarto-category">Data Science</div>
+                <div class="quarto-category">Regression</div>
+                <div class="quarto-category">Python</div>
               </div>
                   </div>
   </div>
@@ -130,14 +194,14 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Harlow Malloc </p>
+               <p>Zhengling Jiang </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">January 17, 2025</p>
+        <p class="date">January 18, 2025</p>
       </div>
     </div>
     
@@ -156,9 +220,91 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is a post with executable code.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Regression is a supervised machine learning technique used to model relationships between variables and make predictions. Among the many regression techniques, ridge regression and logistic regression stand out for their strengths and applications. In this blog, we will dive into these methods, explain their concepts, and guide you through practical implementations via Python.</p>
+</section>
+<section id="what-is-regression" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-regression">What is Regression?</h2>
+<p>Regression is a statistical method for understanding the relationships between features and outcome. Unlike simple linear regression or multiple linear regression, advanced methods like ridge regression and logistic regression can address specific challenges like multicollinearity and classification.</p>
+</section>
+<section id="ridge-regression" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h2>
+<p>Ridge Regression is a linear regression model with a regularization alpha to reduce overfitting. This method adds the squared magnitude of the coefficients as a penalty, it prevents excessively large coefficients that can improve predictive performance. Ridge Regression minimizes this expression: $RSS_{Ridge} = ( - {})^T ( - {}) + ^T {} = | - |^2 + |{}|^2 $ where <span class="math inline">\(\lambda\)</span> is the penalty term. If we increase the hyperparameter alpha of Ridge, it is likely to decrease model complexity. If we set the alpha to zero, it is the same as LinearRegression. Code example:</p>
+<div id="20265efd" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_diabetes</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_diabetes(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Ridge regression model</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ridge <span class="op">=</span> Ridge(alpha<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ridge.fit(X_train, y_train)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> ridge.predict(X_test)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean Squared Error:"</span>, mean_squared_error(y_test, y_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean Squared Error: 3077.41593882723</code></pre>
+</div>
+</div>
+</section>
+<section id="logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
+<p>Logistic regression is a classification algorithm that predicts probabilities of categorical outcomes. The logit function maps predictions to probabilities, making it ideal for binary classification tasks. The logit function can be expressed as: <span class="math inline">\(\mbox{logit}(p_i)= \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 X_{i}.\)</span> In this expression, logit(pi) is the dependent variable and X is the independent variable. Logit odds can be difficult to interpret, thus, we have to transform back our estimated coefficient to the original scale. It is common to exponentiate the coefficient into an odds ratio. The general interpretation is: for each unit increase in <span class="math inline">\(X_i\)</span>, <span class="math inline">\(Y_i\)</span> is <span class="math inline">\(e^{\hat{\beta}_1}\)</span> times more likely to be 1 than to be 0.</p>
+<p>Code example:</p>
+<div id="43ecd6f0" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_iris(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> X[y <span class="op">!=</span> <span class="dv">2</span>], y[y <span class="op">!=</span> <span class="dv">2</span>]  <span class="co"># Binary classification</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Logistic Regression model</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>logreg <span class="op">=</span> LogisticRegression()</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>logreg.fit(X_train, y_train)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> logreg.predict(X_test)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accuracy:"</span>, accuracy_score(y_test, y_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Accuracy: 1.0</code></pre>
+</div>
+</div>
+</section>
+<section id="comparing-ridge-and-logistic-regression" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-ridge-and-logistic-regression">Comparing Ridge and Logistic Regression</h2>
+<p>While Ridge Regression is used for continuous outcomes, Logistic Regression addresses binary and multi-class classification tasks. Here are some insights into their comparison: - Mathematical foundation: Ridge regression minimizes the residual sum of squares with an L2 penalty, while logistic regression optimizes the log-likelihood function with regularization. - Scaling: both ridge regression and logistic regression typically benefit from scaling the input data, especially when using numerical features of varying ranges. - Output interpretability: Ridge regression provides straightforward coefficient estimates for continuous predictions, whereas logistic regression outputs probabilities for different classes.</p>
+</section>
+<section id="real-world-applications-of-regression" class="level2">
+<h2 class="anchored" data-anchor-id="real-world-applications-of-regression">Real-world Applications of Regression</h2>
+<p>Ridge regression helps us find out the relationships in data, and answer questions like: what’s the relationship between the amount of time you study and the exam scores. Many real-world cases could be solved by ridge regression: - Real Estate: Estimating house prices by considering factors like location, size, and amenities. - Finance: Forecasting stock prices and portfolio returns. - Marketing: Predicting sales performance based on advertisement spend.</p>
+<p>In real life, logistic regression is frequently used to forecast binary or multi-class outcomes, such as success/failure, win/lose. Some of the real-world cases are: - Healthcare: Predicting the likelihood of heart disease. - Finance: Detecting fraudulent transactions based on transaction patterns. - Churn prediction: Predicting customer churn for subscription-based services.</p>
+</section>
+<section id="tips-for-effective-regression-modeling" class="level2">
+<h2 class="anchored" data-anchor-id="tips-for-effective-regression-modeling">Tips for Effective Regression Modeling</h2>
+<ul>
+<li>Improve the data quality by removing outliers, and handling missing values.</li>
+<li>Choosing the optimal hyperparameters.</li>
+<li>Detecting multicollinearity in data by using metrics like Variance Inflation Factor (VIF).</li>
+<li>Feature Selection: Use techniques like PCA dimensionality reduction.</li>
+<li>Interpret Coefficients: Understand the impact of each feature on predictions.</li>
+</ul>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>Regression techniques like ridge and logistic regression are essential tools for data scientists. By mastering these models, you can tackle a wide range of prediction and classification problems in real life. Ridge regression helps in predicting continuous variables while handling overfitting through regularization. On the other hand, logistic regression helps to make decisions in binary and multi-class tasks.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
