@@ -230,64 +230,149 @@ window.Quarto = {
 </section>
 <section id="ridge-regression" class="level2">
 <h2 class="anchored" data-anchor-id="ridge-regression">Ridge Regression</h2>
-<p>Ridge Regression is a linear regression model with a regularization alpha to reduce overfitting. This method adds the squared magnitude of the coefficients as a penalty, it prevents excessively large coefficients that can improve predictive performance. Ridge Regression minimizes this expression: $RSS_{Ridge} = ( - {})^T ( - {}) + ^T {} = | - |^2 + |{}|^2 $ where <span class="math inline">\(\lambda\)</span> is the penalty term. If we increase the hyperparameter alpha of Ridge, it is likely to decrease model complexity. If we set the alpha to zero, it is the same as LinearRegression. Code example:</p>
-<div id="20265efd" class="cell" data-execution_count="1">
+<p>Ridge Regression is a linear regression model with a regularization alpha to reduce overfitting. This method adds the squared magnitude of the coefficients as a penalty, it prevents excessively large coefficients that can improve predictive performance. Ridge Regression minimizes this expression: <span class="math display">\[RSS_{Ridge} = (\mathbf{Y} - \mathbf{X} {\beta})^T (\mathbf{Y} - \mathbf{X} {\beta}) + \lambda {\beta}^T {\beta} = \|\mathbf{Y} - \mathbf{X}{\beta}\|^2 + \lambda \|{\beta}\|^2 \]</span></p>
+<p>where <span class="math inline">\(\lambda\)</span> is the penalty term. If we increase the hyperparameter alpha of Ridge, it is likely to decrease model complexity. If we set the alpha to zero, it is the same as LinearRegression.</p>
+<p>Code example:</p>
+<div id="bc2c9025" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> Ridge</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_diabetes</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_diabetes(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Ridge regression model</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ridge <span class="op">=</span> Ridge(alpha<span class="op">=</span><span class="fl">1.0</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ridge.fit(X_train, y_train)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> ridge.predict(X_test)</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean Squared Error:"</span>, mean_squared_error(y_test, y_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_diabetes</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_diabetes(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Ridge regression model</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>ridge <span class="op">=</span> Ridge(alpha<span class="op">=</span><span class="fl">1.0</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>ridge.fit(X_train, y_train)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> ridge.predict(X_test)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Mean Squared Error:"</span>, mean_squared_error(y_test, y_pred))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.scatter(y_test, y_pred, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Actual"</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Predicted"</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Ridge Regression Predictions vs Actuals"</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Mean Squared Error: 3077.41593882723</code></pre>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-2-output-2.png" width="593" height="449" class="figure-img"></p>
+</figure>
 </div>
+</div>
+</div>
+<p>The MSE of 3077.42 indicates the average squared difference between predicted and actual values, with lower values reflecting better performance. This suggests the model performs reasonably well but could be improved through further improvements.</p>
+<p>The scatter plot compares the actual values with the predicted values generated by the Ridge Regression model. Most points lie on a 45-degree diagonal line, which indicating this model’s predictions are good.</p>
 </section>
 <section id="logistic-regression" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h2>
 <p>Logistic regression is a classification algorithm that predicts probabilities of categorical outcomes. The logit function maps predictions to probabilities, making it ideal for binary classification tasks. The logit function can be expressed as: <span class="math inline">\(\mbox{logit}(p_i)= \log\left(\frac{p_i}{1 - p_i}\right) = \beta_0 + \beta_1 X_{i}.\)</span> In this expression, logit(pi) is the dependent variable and X is the independent variable. Logit odds can be difficult to interpret, thus, we have to transform back our estimated coefficient to the original scale. It is common to exponentiate the coefficient into an odds ratio. The general interpretation is: for each unit increase in <span class="math inline">\(X_i\)</span>, <span class="math inline">\(Y_i\)</span> is <span class="math inline">\(e^{\hat{\beta}_1}\)</span> times more likely to be 1 than to be 0.</p>
 <p>Code example:</p>
-<div id="43ecd6f0" class="cell" data-execution_count="2">
+<div id="bc001221" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_iris(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> X[y <span class="op">!=</span> <span class="dv">2</span>], y[y <span class="op">!=</span> <span class="dv">2</span>]  <span class="co"># Binary classification</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Logistic Regression model</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>logreg <span class="op">=</span> LogisticRegression()</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>logreg.fit(X_train, y_train)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> logreg.predict(X_test)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accuracy:"</span>, accuracy_score(y_test, y_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> ConfusionMatrixDisplay, confusion_matrix</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dataset</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> load_iris(return_X_y<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> X[y <span class="op">!=</span> <span class="dv">2</span>], y[y <span class="op">!=</span> <span class="dv">2</span>]  <span class="co"># Binary classification</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Train Logistic Regression model</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>logreg <span class="op">=</span> LogisticRegression()</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>logreg.fit(X_train, y_train)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Predictions and evaluation</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> logreg.predict(X_test)</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Accuracy:"</span>, accuracy_score(y_test, y_pred))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>cm <span class="op">=</span> confusion_matrix(y_test, y_pred)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the confusion matrix</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>disp <span class="op">=</span> ConfusionMatrixDisplay(confusion_matrix<span class="op">=</span>cm, display_labels<span class="op">=</span>logreg.classes_)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>disp.plot(cmap<span class="op">=</span><span class="st">'Blues'</span>, values_format<span class="op">=</span><span class="st">'d'</span>)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Confusion Matrix for Logistic Regression"</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Accuracy: 1.0</code></pre>
 </div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-2.png" width="496" height="449" class="figure-img"></p>
+</figure>
 </div>
+</div>
+</div>
+<p>The accuracy of 1.00 shows perfect classification on the test dataset, likely due to the dataset’s simplicity and separability.</p>
+<p>The confusion matrix shows the counts of true positive, true negative, false positive, and false negative predictions.</p>
 </section>
 <section id="comparing-ridge-and-logistic-regression" class="level2">
 <h2 class="anchored" data-anchor-id="comparing-ridge-and-logistic-regression">Comparing Ridge and Logistic Regression</h2>
-<p>While Ridge Regression is used for continuous outcomes, Logistic Regression addresses binary and multi-class classification tasks. Here are some insights into their comparison: - Mathematical foundation: Ridge regression minimizes the residual sum of squares with an L2 penalty, while logistic regression optimizes the log-likelihood function with regularization. - Scaling: both ridge regression and logistic regression typically benefit from scaling the input data, especially when using numerical features of varying ranges. - Output interpretability: Ridge regression provides straightforward coefficient estimates for continuous predictions, whereas logistic regression outputs probabilities for different classes.</p>
+<p>While Ridge Regression is used for continuous outcomes, Logistic Regression addresses binary and multi-class classification tasks. Here are some insights into their comparison:</p>
+<ol type="1">
+<li><p><strong>Mathematical foundation:</strong> Ridge regression minimizes the residual sum of squares with an L2 penalty, while logistic regression optimizes the log-likelihood function with regularization.</p></li>
+<li><p><strong>Scaling:</strong> both ridge regression and logistic regression typically benefit from scaling the input data, especially when using numerical features of varying ranges.</p></li>
+<li><p><strong>Output interpretability:</strong> Ridge regression provides straightforward coefficient estimates for continuous predictions, whereas logistic regression outputs probabilities for different classes.</p></li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 33%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Aspect</th>
+<th>Ridge Regression</th>
+<th>Logistic Regression</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Task Type</td>
+<td>Regression (continuous)</td>
+<td>Classification (binary/multi-class)</td>
+</tr>
+<tr class="even">
+<td>Regularization</td>
+<td>L2</td>
+<td>L1, L2, or Elastic Net</td>
+</tr>
+<tr class="odd">
+<td>Output</td>
+<td>Continuous values</td>
+<td>Probabilities</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="real-world-applications-of-regression" class="level2">
 <h2 class="anchored" data-anchor-id="real-world-applications-of-regression">Real-world Applications of Regression</h2>
-<p>Ridge regression helps us find out the relationships in data, and answer questions like: what’s the relationship between the amount of time you study and the exam scores. Many real-world cases could be solved by ridge regression: - Real Estate: Estimating house prices by considering factors like location, size, and amenities. - Finance: Forecasting stock prices and portfolio returns. - Marketing: Predicting sales performance based on advertisement spend.</p>
-<p>In real life, logistic regression is frequently used to forecast binary or multi-class outcomes, such as success/failure, win/lose. Some of the real-world cases are: - Healthcare: Predicting the likelihood of heart disease. - Finance: Detecting fraudulent transactions based on transaction patterns. - Churn prediction: Predicting customer churn for subscription-based services.</p>
+<p>Ridge regression helps us find out the relationships in data, and answer questions like: what’s the relationship between the amount of time you study and the exam scores. Many real-world cases could be solved by ridge regression:</p>
+<ol type="1">
+<li><p><strong>Real Estate:</strong> Estimating house prices by considering factors like location, size, and amenities.</p></li>
+<li><p><strong>Finance:</strong> Forecasting stock prices and portfolio returns.</p></li>
+<li><p><strong>Marketing:</strong> Predicting sales performance based on advertisement spend.</p></li>
+</ol>
+<p>In real life, logistic regression is frequently used to forecast binary or multi-class outcomes, such as success/failure, win/lose. Some of the real-world cases are:</p>
+<ol type="1">
+<li><p><strong>Healthcare:</strong> Predicting the likelihood of heart disease.</p></li>
+<li><p><strong>Finance:</strong> Detecting fraudulent transactions based on transaction patterns.</p></li>
+<li><p><strong>Churn prediction:</strong> Predicting customer churn for subscription-based services.</p></li>
+</ol>
 </section>
 <section id="tips-for-effective-regression-modeling" class="level2">
 <h2 class="anchored" data-anchor-id="tips-for-effective-regression-modeling">Tips for Effective Regression Modeling</h2>
@@ -302,6 +387,12 @@ window.Quarto = {
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>Regression techniques like ridge and logistic regression are essential tools for data scientists. By mastering these models, you can tackle a wide range of prediction and classification problems in real life. Ridge regression helps in predicting continuous variables while handling overfitting through regularization. On the other hand, logistic regression helps to make decisions in binary and multi-class tasks.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><a href="https://scikit-learn.org/stable/">Scikit-learn Documentation</a></li>
+</ul>
 
 
 </section>
